@@ -1,4 +1,4 @@
-#  Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. 
+#  Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 #  Licensed under the Apache License Version 2.0 (the "License"). You may not 
 #  use this file except in compliance with the License. A copy of the License is 
@@ -126,7 +126,7 @@ Mappings:
     SourceBucketName:
       Name: solutions-reference
     SourceKeyName:
-      Name: aws-landing-zone/v2.3.1/add-on/aws-centralized-logging-solution.zip
+      Name: aws-landing-zone/v2.4.0/add-on/aws-centralized-logging-solution.zip
     DestinationKeyName:
       Name: aws-landing-zone-configuration.zip
   LambdaFunction:
@@ -136,18 +136,23 @@ Mappings:
 Resources:
   LandingZoneAddOnDeploymentLambda:
     Type: AWS::Lambda::Function
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W58
+            reason: "False positive - CloudWatch Logs permissions granted through a role in another template"
     Properties:
       Environment:
         Variables:
           log_level: !FindInMap [LambdaFunction, Logging, Level]
       Code:
         S3Bucket: !Sub solutions-${AWS::Region}
-        S3Key: aws-landing-zone/v2.3.1/aws-landing-zone-add-on-config-deployer.zip
+        S3Key: aws-landing-zone/v2.4.0/aws-landing-zone-add-on-config-deployer.zip
       Description: AWS Landing Zone Add-On Deployment Lambda
       Handler: add_on_config_deployer.lambda_handler
       MemorySize: '512'
       Role: !Sub arn:aws:iam::${AWS::AccountId}:role/LandingZoneDeploymentLambdaRole
-      Runtime: python3.6
+      Runtime: python3.8
       Timeout: '300'
       TracingConfig:
           Mode: Active
